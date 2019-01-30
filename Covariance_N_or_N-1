@@ -27,4 +27,20 @@ My computation for Conv:
 I then search for answers. Some sources say that sum(x1, x2, x3, ..., xn)/(n-1) instead of dividing n which I did.
 When I follow this hint and divide by n-1, the result is the same as python numpy.cov().
 
-Source: http://vortex.ihrc.fiu.edu/MET4570/members/Lectures/Lect05/m10divideby_nminus1.pdf
+The following source is from: 
+http://vortex.ihrc.fiu.edu/MET4570/members/Lectures/Lect05/m10divideby_nminus1.pdf
+We would want the following to be true:
+We would want the average of the sample variances for all possible samples to equal the population variance.
+It seems like a logical property and a reasonable thing to happen.
+This is called “unbiased”
+
+When we divide by (n −1) when calculating the sample variance, then it turns out that
+the average of the sample variances for all possible samples is equal the population variance.
+So the sample variance is what we call an unbiased estimate of the population variance.
+
+If instead we were to divide by n (rather than n −1) when calculating the sample variance,
+then the average for all possible samples would NOT equal the population variance.
+
+Dividing by n does not give an “unbiased” estimate of the population standard deviation.
+Dividing by n−1 satisfies this property of being “unbiased”, but dividing by n does not.
+Therefore we prefer to divide by n-1 when calculating the sample variance. 

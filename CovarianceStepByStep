@@ -1,0 +1,85 @@
+""" covariance practice and understanding 1 """
+import numpy as np
+
+'x1, x2, ..., xn are column vectors. '
+'assume each vector contains a group of features color, weight, length, ..., height'
+x1 = np.array([0,0,0,1,0,1,0,0,0]).reshape(9, 1)
+x2 = np.array([2,1,0,1,0,1,0,0,0]).reshape(9, 1)
+x3 = np.array([0,0,0,1,0,1,0,0,0]).reshape(9, 1)
+x4 = np.array([0,0,0,1,0,1,0,0,0]).reshape(9, 1)
+
+'Matrix X = [x1, x2, ..., xn], a group of column vectors'
+X = np.concatenate((x1, x2, x3, x4), axis=1)
+'Matrix X_T is transpose matrix of X, each row is a sample_i [color_i, weight_i, length_i, ..., height_i]'
+X_T = X.transpose()
+
+# print('x1:\n{:}'.format(x1))
+print('X:\n{:}'.format(X))
+print('X_T:\n{:}'.format(X_T))
+
+'what is the mean?'
+'mean is the average value of a variable'
+'what is a variable in the above? is x1 a variable?'
+'assume x1 = [color, weight, length, ..., height]'
+'color is a variable'
+'so the mean of color = sum(colors)/num_of_samples'
+'we have 4 samples in this case, x1, x2, x3, x4'
+
+'axis = 1 represents mean of rows, so X_M is a 9x1 column vector [average(color), average(weight), ...]'
+X_M = np.mean(X, axis=1).reshape(9,1)
+print('X_M:\n{:}'.format(X_M))
+
+'X subtract mean'
+X_sub_M = np.subtract(X, X_M)
+print('X_sub_M:\n{:}'.format(X_sub_M))
+X_sub_M_T = X_sub_M.transpose()
+print('X_sub_M_T:\n{:}'.format(X_sub_M_T))
+
+'Assume a, b are two random variables(e.g. color, weight)'
+'Assume x = [a, b, ..., ].T. x1 and x2 is an example of x respectively.'
+'x1 = [0, 1, ...].T represents color = 0, weight =1'
+'x2 = [1, 1, ...].T represents color = 1, weight =1'
+'How the color related with the weight?'
+'COV(a,b) = E(ab)^2 - E(a)E(b)'
+'COV(color, weight) = E(color*weight)^2 - E(color)E(weight)'
+' = (color1*weight1 + color2*weight2)/2)^2 - (color1+color2)/2 * (weight1+weight2)/2'
+' = ((x10*x11+x20*x21)/2)^2 - (x10+x20)/2 * (x11+x21)/2'
+# COV_color_weight = (x1[0,0]*x1[1,0]+x2[1,0]*x2[1,0])/2
+
+'COV(color, weight) = E((color-E(color)) * (weight-E(weight)))'
+' = ((color1-color_mean)*(weight1-weight_mean) + (color2-color_mean)*(weight2-weight_mean))/2'
+' = ((x10-color_mean)*(x11-weight_mean) + (x20-color_mean)*(x21-weight_mean))/2'
+
+"""
+COV(X) =[[COV(color,color), COV(color,weight), ..., COV(color, height)]
+         [COV(weight,color), COV(weight,weight), ..., COV(weight, height)]
+         ...
+         [COV(height,color), COV(height,weight), ..., COV(height, height)]]
+"""
+
+"""
+'Matrix X = [x1, x2, ..., xn]'
+'= [a1, a2, ..., an] ~ [color1, color2, ...]'
+  '[b1, b2, ..., bn] ~ [weight1, weight2, ...]'
+  '...'
+'X * X.T /n = '
+    '[[a.a/n a.b/n ... a.p/n],'
+    '[[b.a/n b.b/n ... b.p/n],'
+    '  ...'
+    '[[p.a/n p.b/n ... p.p/n]]'
+    'a.b/n = (a1*b1+a2*b2+...+an*bn)/n'
+"""
+
+'COV(color, weight) = E((color-E(color)) * (weight-E(weight)))'
+' = ((a1-color_mean)*(b1-weight_mean) + (a2-color_mean)*(b2-weight_mean))/2'
+
+X_COV = np.dot(X_sub_M, X_sub_M_T)/4
+print('Compute Conv:\n{:}'.format(X_COV))
+
+'this is correct PxP'
+print('Numpy conv:\n{:}'.format(np.cov(X)))
+
+'Clearly it is not cov because this is NxN'
+print('Numpy conv:\n{:}'.format(np.cov(X_T)))
+
+'we usually use /n, but the embedded python conv shows /n-1'

@@ -1,0 +1,30 @@
+Covariance, divide by n or n-1?
+
+When I calculate the covariance of a Matrix X, I got a different value comparing to the python library function numpy.cov()
+print('Numpy conv:\n{:}'.format(np.cov(X)))
+Numpy conv:
+[[1.   0.5  0.   0.   0.   0.   0.   0.   0.  ]
+ [0.5  0.25 0.   0.   0.   0.   0.   0.   0.  ]
+ [0.   0.   0.   0.   0.   0.   0.   0.   0.  ]
+ [0.   0.   0.   0.   0.   0.   0.   0.   0.  ]
+ [0.   0.   0.   0.   0.   0.   0.   0.   0.  ]
+ [0.   0.   0.   0.   0.   0.   0.   0.   0.  ]
+ [0.   0.   0.   0.   0.   0.   0.   0.   0.  ]
+ [0.   0.   0.   0.   0.   0.   0.   0.   0.  ]
+ [0.   0.   0.   0.   0.   0.   0.   0.   0.  ]]
+ 
+My computation for Conv:
+[[0.75   0.375  0.     0.     0.     0.     0.     0.     0.    ]
+ [0.375  0.1875 0.     0.     0.     0.     0.     0.     0.    ]
+ [0.     0.     0.     0.     0.     0.     0.     0.     0.    ]
+ [0.     0.     0.     0.     0.     0.     0.     0.     0.    ]
+ [0.     0.     0.     0.     0.     0.     0.     0.     0.    ]
+ [0.     0.     0.     0.     0.     0.     0.     0.     0.    ]
+ [0.     0.     0.     0.     0.     0.     0.     0.     0.    ]
+ [0.     0.     0.     0.     0.     0.     0.     0.     0.    ]
+ [0.     0.     0.     0.     0.     0.     0.     0.     0.    ]]
+ 
+I then search for answers. Some sources say that sum(x1, x2, x3, ..., xn)/(n-1) instead of dividing n which I did.
+When I follow this hint and divide by n-1, the result is the same as python numpy.cov().
+
+Source: http://vortex.ihrc.fiu.edu/MET4570/members/Lectures/Lect05/m10divideby_nminus1.pdf

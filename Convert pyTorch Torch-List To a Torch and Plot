@@ -1,4 +1,4 @@
-Problem definition
+Problem definition: Convert a list including 2-D tensors to a 2-D tensor.
 
 A list is used to add 2-d tensors.
 theta_track = []

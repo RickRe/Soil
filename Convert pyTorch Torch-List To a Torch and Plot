@@ -10,8 +10,15 @@ As a result, theta_track is generated such as
 [tensor([[2.],[4.]]), 
  tensor([[1.2667],[3.8467]]), 
  tensor([[0.8391],[3.7556]])]
+To convert the list to a 2-D tensor, the magic is:
+theta_track = torch.squeeze(torch.stack(theta_track), 2)
 
-We want to use this theta track record to do calculation, e.g. cost_function.
+Because torch.stack(theta_track) will replace the list wrapper by a 3rd dimension thus we get a 3-D tensor.
+Then we use torch.squeeze(input, 2) to remove the 3rd dimension, then we get a 2-D tensor.
+
+Skip the following if you already understand the above points!!!
+
+If we don't use this magic line, and we want to use this theta track record to do calculation, e.g. cost_function.
 ## cost_func computes the cost function J
 def cost_func(theta, X, y): 
     return torch.mul(torch.mean(torch.pow(torch.add(hypothesis(theta, X), - y), 2), 0, True), 0.5)
@@ -34,11 +41,9 @@ tensor([[2.0000, 4.0000],
         [0.5205, 1.9950],
         [0.5099, 1.9982],
         [0.5012, 2.0047]])
+          
         
-        
-        
-        
-FYI:
+Code FYI:
 
 ## The weight updated computed using SGD
 def weightupdate_sgd(count, alpha, theta, X, y):

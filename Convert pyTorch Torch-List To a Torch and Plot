@@ -1,0 +1,78 @@
+Problem definition
+
+A list is used to add 2-d tensors.
+theta_track = []
+new_theta = torch.Tensor([[2],[4]])
+...
+theta_track.append(new_theta)
+
+As a result, theta_track is generated such as
+[tensor([[2.],[4.]]), 
+ tensor([[1.2667],[3.8467]]), 
+ tensor([[0.8391],[3.7556]])]
+
+We want to use this theta track record to do calculation, e.g. cost_function.
+## cost_func computes the cost function J
+def cost_func(theta, X, y): 
+    return torch.mul(torch.mean(torch.pow(torch.add(hypothesis(theta, X), - y), 2), 0, True), 0.5)
+    
+loss_sgd = cost_func(theta_track.t(), X, y)
+
+The code line above is not going to work as theta_track is a list therefore .t() operation will fail.
+
+My finding is that converting list to tensor is an effective method while keep the flexibility of using dynamically 
+expanded list.
+
+theta_track = torch.squeeze(torch.stack(theta_track), 2)
+
+By the above line, theta_track is converted into a 2-D tensor. Now, we can use theta_track.t() as theta_track is a tensor.
+
+tensor([[2.0000, 4.0000],
+        [1.9649, 3.9519],
+        [1.7745, 4.0041],
+        ...,
+        [0.5205, 1.9950],
+        [0.5099, 1.9982],
+        [0.5012, 2.0047]])
+        
+        
+        
+        
+FYI:
+
+## The weight updated computed using SGD
+def weightupdate_sgd(count, alpha, theta, X, y):
+    # YOUR CODE HERE
+    # raise NotImplementedError()
+    new_theta = theta
+    theta_track = []
+
+    for epoch in range(15):
+        idx = torch.randperm(X.shape[0])
+        for i in range(0, X.shape[0]):
+            theta_track.append(new_theta)
+
+            new_theta = new_theta - alpha * \
+                        grad_cost_func(new_theta, X[idx[i]].reshape(1, 2), y[idx[i]])
+    return theta_track
+
+## The weight update computed using the ADAM optimisation algorithm
+def weightupdate_adam(count, eps, beta_1, beta_2, alpha, theta, X, y):
+
+    new_theta = theta
+    theta_track = []
+    vdw = 0  # volecity dw
+    sdw = 0  # squared dw
+    
+    for epoch in range(1,30):
+        idx = torch.randperm(X.shape[0])
+        for i in range(0, X.shape[0]):
+            theta_track.append(new_theta)
+
+            vdw = beta_1 * vdw + (1 - beta_1) * grad_cost_func(new_theta, X[idx[i]].reshape(1, 2), y[idx[i]])
+            vdw_corr = vdw / (1 - beta_1 ** epoch)
+            sdw = beta_2 * sdw + (1 - beta_2) * (grad_cost_func(new_theta, X[idx[i]].reshape(1, 2), y[idx[i]]) ** 2)
+            sdw_corr = sdw / (1 - beta_2 ** epoch)
+            new_theta = new_theta - alpha * vdw_corr/(torch.sqrt(sdw_corr) + eps)
+
+    return torch.squeeze(torch.stack(theta_track), 2)

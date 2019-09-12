@@ -1,0 +1,73 @@
+# Demo for SQL Join Operations (INNER, LEFT, RIGHT, FULL OUTER)
+
+## Prepare Database and Tables in MySQL
+create schema if not exists SQL_demo collate utf8_general_ci;
+
+use SQL_demo;
+
+create table if not exists Customers
+(
+	CustomerID int not null
+		primary key,
+	CustomerName varchar(50) null,
+	ContactName varchar(50) null,
+	Address varchar(50) null,
+	City varchar(20) null,
+	PostalCode varchar(10) null,
+	Country varchar(20) null
+);
+
+create table if not exists Orders
+(
+	OrderID int not null
+		primary key,
+	CustomerID int null,
+	EmployeeID int null,
+	OrderDate date null,
+	ShipperID int null
+);
+
+## Prepare Data
+Insert INTO Customers(CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country)
+VALUES (1, 'Alfreds Futterkiste', 'Maria Anders', 'Obere Str. 57', 'Berlin', '12209', 'Germany');
+Insert INTO Customers(CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country)
+VALUES (2, 'Ana Trujillo Emparedados y helados', 'Ana Trujillo', 'Avda. de la Constitución 2222', 'México D.F.', '05021', 'Mexico');
+Insert INTO Customers(CustomerID, CustomerName, ContactName, Address, City, PostalCode, Country)
+VALUES (3, 'Antonio Moreno Taquería', 'Antonio Moreno', 'Mataderos 2312', 'México D.F.', '05023', 'Mexico');
+SELECT * FROM Customers B;
+
+Insert INTO Orders(OrderID, CustomerID, EmployeeID, OrderDate, ShipperID)
+VALUES (10308, 2, 7, '1996-09-18', 3);
+Insert INTO Orders(OrderID, CustomerID, EmployeeID, OrderDate, ShipperID)
+VALUES (10309, 37, 3, '1996-09-19', 1);
+Insert INTO Orders(OrderID, CustomerID, EmployeeID, OrderDate, ShipperID)
+VALUES (10310, 77, 8, '1996-09-20', 2);
+SELECT * FROM Orders A;
+
+## Prepare Data
+# Inner join only output the rows satisfing Orders.CustomerID = Customers.CustomerID.
+SELECT * 
+FROM Orders A
+INNER JOIN Customers B ON A.CustomerID = B.CustomerID;
+
+# left join means the left table (Orders) must show all its rows.
+# If the right table does not have corresponding record, then the fields of right table will be shown as null.
+SELECT *
+FROM Orders
+LEFT JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+
+# Right join means the right table (Customers) must show all its rows.
+# If the left table (Orders) does not have corresponding record, then the fields of right table will be shown as null.
+SELECT *
+FROM Orders
+RIGHT JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+
+# FULL join means the left table (Orders) and right table (Customers) must show all their rows.
+# So very likely to increase the records. A + B - intersection(A, B)
+# MySql does not have FULL-OUTER-JOIN syntax.
+(SELECT * FROM Orders
+LEFT JOIN Customers ON Orders.CustomerID = Customers.CustomerID)
+UNION ALL
+(SELECT * FROM Orders
+RIGHT JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+WHERE Orders.OrderID IS NULL)
